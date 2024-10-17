@@ -1,7 +1,7 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
-
 
 struct Node {
 	int data;
@@ -39,17 +39,13 @@ struct Node* CreateTree(struct Node* root, struct Node* r, int data) {
 	return root;
 }
 
-void print_tree(struct Node* r, int l)
-{
-
-	if (r == NULL)
-	{
+void print_tree(struct Node* r, int l) {
+	if (r == NULL) {
 		return;
 	}
 
 	print_tree(r->right, l + 1);
-	for (int i = 0; i < l; i++)
-	{
+	for (int i = 0; i < l; i++) {
 		printf(" ");
 	}
 
@@ -57,11 +53,35 @@ void print_tree(struct Node* r, int l)
 	print_tree(r->left, l + 1);
 }
 
+
 struct Node* find(struct Node* root, int data) {
+	if (root == NULL) return NULL;  
+
 	if (root->data == data) return root;
-	if (root->data > data && root->right != NULL) find(root->right, data);
-	else if (root->left != NULL) find(root->left, data);
-	else return NULL;
+	if (data > root->data) return find(root->left, data);
+	else return find(root->right, data);
+}
+
+
+int find_depth(struct Node* root, int data) {
+	int depth = 0;
+	struct Node* current = root;
+
+	while (current != NULL) {
+		if (current->data == data) {
+			return depth;  
+		}
+		depth++;  
+
+		if (data > current->data) {
+			current = current->left; 
+		}
+		else {
+			current = current->right; 
+		}
+	}
+
+	return -1;  
 }
 
 int count(struct Node* root, int data, int cnt) {
@@ -69,39 +89,43 @@ int count(struct Node* root, int data, int cnt) {
 	if (root->data >= data && root->right != NULL) cnt = count(root->right, data, cnt);
 	else if (root->left != NULL)  cnt = count(root->left, data, cnt);
 	else return cnt;
+
+	return cnt;
 }
 
-int main()
-{
+int main() {
 	setlocale(LC_ALL, "Rus");
 	int D, number, start = 1;
 
 	printf("-1 - окончание построения дерева\n");
-	while (start)
-	{
+	while (start) {
 		printf("Введите число: ");
 		scanf_s("%d", &D);
-		if (D == -1)
-		{
+		if (D == -1) {
 			printf("Построение дерева окончено\n\n");
 			start = 0;
 		}
 		else
 			root = CreateTree(root, root, D);
-
 	}
 
 	print_tree(root, 0);
 	printf("Введи значение number\n");
-	scanf("%d", &number);
+	scanf_s("%d", &number);
 
-	int cnt;
-	cnt = count(root, number, 0);
+	int cnt = count(root, number, 0);
 	printf("найдено %d\n", cnt);
 
 	struct Node* r = find(root, number);
-	if (r) printf("найден %d\n", r->data);
-	else printf("элемент не найден\n");
+
+	if (r) {
+		printf("найден %d\n", r->data);
+		int depth = find_depth(root, number);
+		printf("глубина элемента %d: %d\n", number, depth);
+	}
+	else {
+		printf("элемент не найден\n");
+	}
 
 	scanf_s("%d", &D);
 	return 0;
