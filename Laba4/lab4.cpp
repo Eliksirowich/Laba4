@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
-
 struct Node {
 	int data;
 	struct Node* left;
@@ -43,7 +42,6 @@ void print_tree(struct Node* r, int l) {
 	if (r == NULL) {
 		return;
 	}
-
 	print_tree(r->right, l + 1);
 	for (int i = 0; i < l; i++) {
 		printf(" ");
@@ -53,35 +51,30 @@ void print_tree(struct Node* r, int l) {
 	print_tree(r->left, l + 1);
 }
 
-
 struct Node* find(struct Node* root, int data) {
-	if (root == NULL) return NULL;  
-
+	if (root == NULL) return NULL;
 	if (root->data == data) return root;
+
 	if (data > root->data) return find(root->left, data);
 	else return find(root->right, data);
 }
-
-
 int find_depth(struct Node* root, int data) {
 	int depth = 0;
+	int lastdepth = -1;
 	struct Node* current = root;
-
 	while (current != NULL) {
 		if (current->data == data) {
-			return depth;  
+			lastdepth = depth;
 		}
-		depth++;  
-
+		depth++;
 		if (data > current->data) {
-			current = current->left; 
+			current = current->left;
 		}
 		else {
-			current = current->right; 
+			current = current->right;
 		}
 	}
-
-	return -1;  
+	return lastdepth;
 }
 
 int count(struct Node* root, int data, int cnt) {
@@ -89,15 +82,13 @@ int count(struct Node* root, int data, int cnt) {
 	if (root->data >= data && root->right != NULL) cnt = count(root->right, data, cnt);
 	else if (root->left != NULL)  cnt = count(root->left, data, cnt);
 	else return cnt;
-
 	return cnt;
 }
-
 int main() {
 	setlocale(LC_ALL, "Rus");
 	int D, number, start = 1;
 
-	printf("-1 - окончание построения дерева\n");
+	printf("-1 - окончание построения дерева	\n");
 	while (start) {
 		printf("Введите число: ");
 		scanf_s("%d", &D);
@@ -112,12 +103,10 @@ int main() {
 	print_tree(root, 0);
 	printf("Введи значение number\n");
 	scanf_s("%d", &number);
-
 	int cnt = count(root, number, 0);
 	printf("найдено %d\n", cnt);
 
 	struct Node* r = find(root, number);
-
 	if (r) {
 		printf("найден %d\n", r->data);
 		int depth = find_depth(root, number);
@@ -130,4 +119,3 @@ int main() {
 	scanf_s("%d", &D);
 	return 0;
 }
-
